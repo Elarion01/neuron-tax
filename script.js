@@ -1,139 +1,172 @@
-
 const searchForm = document.getElementById("search-form");
 const searchInput = document.getElementById("search-input");
 const challenge = document.getElementById("challenge");
 const questionText = document.getElementById("question");
-const answerInput = document.getElementById("answer-input");
-const checkButton = document.getElementById("check-answer");
+const optionsBox = document.getElementById("options");
 const feedback = document.getElementById("feedback");
 const results = document.getElementById("results");
 
 let currentQuery = "";
-let currentAnswer = "";
+let currentQuestion = null;
 let attempts = 0;
 
+// Each wrong option has its own roast based on the mistake.
 const questions = [
   {
     category: "Maths",
     question: "What is 15 × 4?",
-    answer: "60"
+    options: [
+      { text: "60", correct: true },
+      { text: "45", roast: "45? That's 15 × 3. Your neurons skipped a row. 💀" },
+      { text: "70", roast: "70? Rounding up because you felt generous?" },
+      { text: "54", roast: "54? Where did that come from? Pure vibes." }
+    ]
   },
   {
     category: "Riddle",
     question: "What has keys but cannot open locks?",
-    answer: "keyboard"
+    options: [
+      { text: "A keyboard", correct: true },
+      { text: "A broken door", roast: "A broken door? That's a lock problem, not a keys problem." },
+      { text: "A blacksmith", roast: "A blacksmith makes keys AND opens locks. Deep, but wrong." },
+      { text: "A wallet", roast: "A wallet? Unless you carry 87 keys, no. 💀" }
+    ]
   },
   {
     category: "Computer Science",
     question: "What does CPU stand for?",
-    answer: "central processing unit"
+    options: [
+      { text: "Central Processing Unit", correct: true },
+      { text: "Computer Personal Unit", roast: "'Computer Personal Unit'? Sounds like your laptop's diary." },
+      { text: "Central Program Utility", roast: "Central Program Utility? You invented a government office." },
+      { text: "Core Power Unit", roast: "Core Power Unit? That's a phone charger, buddy." }
+    ]
   },
   {
     category: "Maths",
     question: "What is the square of 9?",
-    answer: "81"
+    options: [
+      { text: "81", correct: true },
+      { text: "18", roast: "18? You doubled it. That's not squaring, that's laziness." },
+      { text: "99", roast: "99? You wrote 9 twice and called it maths." },
+      { text: "72", roast: "72 is 9 × 8. So close, yet your neurons are off by one." }
+    ]
   },
   {
     category: "Riddle",
     question: "What gets wetter as it dries?",
-    answer: "towel"
+    options: [
+      { text: "A towel", correct: true },
+      { text: "A sponge", roast: "A sponge gets wetter by soaking, not drying. Nice try though." },
+      { text: "Rain", roast: "Rain doesn't dry anything. It just ruins your hair." },
+      { text: "A washing machine", roast: "A washing machine? It wets everything and dries nothing." }
+    ]
   },
   {
     category: "Computer Science",
     question: "Which language runs directly in most web browsers?",
-    answer: "javascript"
+    options: [
+      { text: "JavaScript", correct: true },
+      { text: "Python", roast: "Python? A snake can't run in your browser. 🐍" },
+      { text: "Java", roast: "Java is to JavaScript what ham is to hamster. Classic mix-up." },
+      { text: "C++", roast: "C++ in a browser? Your laptop would file for divorce." }
+    ]
+  },
+  {
+    category: "Computer Science",
+    question: "What does HTML stand for?",
+    options: [
+      { text: "HyperText Markup Language", correct: true },
+      { text: "HighText Machine Language", roast: "You literally built this site in HTML and still missed it. 💀" },
+      { text: "HyperTool Multi Language", roast: "HyperTool? Your brain is buffering." },
+      { text: "Home Text Markup Language", roast: "Home Text? That's not HTML, that's a WhatsApp status." }
+    ]
+  },
+  {
+    category: "Computer Science",
+    question: "How many bits are in a byte?",
+    options: [
+      { text: "8", correct: true },
+      { text: "4", roast: "4 is a nibble. Yes, that's a real word. Look it up." },
+      { text: "16", roast: "16? Your byte went to the gym." },
+      { text: "10", roast: "10? You counted fingers, not bits. 🖐️" }
+    ]
+  },
+  {
+    category: "Maths",
+    question: "What comes next? 2, 4, 8, 16, ...",
+    options: [
+      { text: "32", correct: true },
+      { text: "24", roast: "24? You added 8 and called it a pattern." },
+      { text: "30", roast: "30? The pattern is doubling, not 'whatever feels right'." },
+      { text: "20", roast: "20? You added 4 for no reason. Chaos energy." }
+    ]
+  },
+  {
+    category: "Riddle",
+    question: "What has a head and a tail but no body?",
+    options: [
+      { text: "A coin", correct: true },
+      { text: "A snake", roast: "A snake has a whole body. That's literally its entire thing. 🐍" },
+      { text: "A broom", roast: "A broom has a head and a handle. Cute guess, no cigar." },
+      { text: "A dog", roast: "A dog has a body. A very good body, but still a body. 🐶" }
+    ]
   }
-];
-
-const wrongRoasts = [
-  "💀 Your neurons just filed a complaint.",
-  "BRO. Even the calculator is disappointed.",
-  "🧠 Brain.exe has stopped responding.",
-  "That answer needs a software update.",
-  "I can't let that brain be drowsy!"
 ];
 
 const correctRoasts = [
-  "Fine, Einstein. You may proceed. 🧠",
-  "Neurons activated. Search unlocked! 🔓",
-  "Look at you actually using your brain!",
-  "Impressive. Your brain is still under warranty."
+  "Wow, your brain is stronger than I thought. I assumed it was half dead. 🧠",
+  "Correct! I thought your brain was drowsy, but look at you go.",
+  "I never knew your brain had this much intelligence in it. Impressive.",
+  "Right answer! Someone give this brain a medal (and maybe a coffee). ☕",
+  "Correct. Your neurons just woke up and chose violence. 💪",
+  "Plot twist: your brain actually works. Who knew?",
+  "Okay, genius. Don't let it go to your head. It's still small. 😏",
+  "Right! Your brain is officially out of drowsy mode. 🔓"
 ];
 
-function showRandomQuestion() {
-  const randomIndex = Math.floor(Math.random() * questions.length);
-  const selected = questions[randomIndex];
+const pick = list => list[Math.floor(Math.random() * list.length)];
 
-  currentAnswer = selected.answer;
+function shuffle(list) {
+  for (let i = list.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [list[i], list[j]] = [list[j], list[i]];
+  }
+  return list;
+}
+
+function showRandomQuestion() {
+  currentQuestion = pick(questions);
   attempts = 0;
 
   questionText.textContent =
-    `${selected.category}: ${selected.question}`;
+    `${currentQuestion.category}: ${currentQuestion.question}`;
 
-  answerInput.value = "";
   feedback.textContent = "";
-  challenge.hidden = false;
   results.replaceChildren();
-  answerInput.focus();
+  optionsBox.replaceChildren();
+  optionsBox.hidden = false;
+
+  shuffle([...currentQuestion.options]).forEach(option => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "option-btn";
+    button.textContent = option.text;
+    button.addEventListener("click", () => handleChoice(option, button));
+    optionsBox.appendChild(button);
+  });
+
+  challenge.hidden = false;
 }
 
+function handleChoice(option, button) {
+  if (option.correct) {
+        results.replaceChildren();
 
-searchForm.addEventListener("submit", function (event) {
-  event.preventDefault();
-
-  const enteredText = searchInput.value.trim();
-
-  if (!enteredText) return;
-
-  // Secret bypass keyword: brain.exe
-  if (enteredText.toLowerCase().startsWith("brain.exe")) {
-    currentQuery = enteredText
-      .slice("brain.exe".length)
-      .trim();
-
-    if (!currentQuery) {
-      feedback.textContent =
-        "Secret mode needs a search query too, genius. 💀";
-      challenge.hidden = false;
-      questionText.textContent =
-        "What do you want to search without paying your Neuron Tax?";
-      answerInput.hidden = true;
-      checkButton.hidden = true;
-      return;
-    }
-
-    window.open(
-      "https://www.google.com/search?q=" +
-      encodeURIComponent(currentQuery),
-      "_blank",
-      "noopener,noreferrer"
-    );
-
-    return;
-  }
-
-  currentQuery = enteredText;
-
-  answerInput.hidden = false;
-  checkButton.hidden = false;
-  
-  showRandomQuestion();
-});
-
-
-checkButton.addEventListener("click", function () {
-  const userAnswer = answerInput.value.trim().toLowerCase();
-
-  if (!userAnswer) {
-    feedback.textContent = "Type an answer first, genius. 💀";
-    return;
-  }
-
-  if (userAnswer === currentAnswer.toLowerCase()) {
-    feedback.textContent =
-      correctRoasts[Math.floor(Math.random() * correctRoasts.length)];
-
-    results.replaceChildren();
+    const praise = document.createElement("p");
+    praise.className = "praise";
+    praise.textContent = "✅ Correct! " + pick(correctRoasts);
+    results.appendChild(praise);
 
     const message = document.createElement("p");
     message.textContent = `Neuron Tax paid for: "${currentQuery}"`;
@@ -148,24 +181,56 @@ checkButton.addEventListener("click", function () {
     link.rel = "noopener noreferrer";
     results.appendChild(link);
 
+        startMaze(link);
     challenge.hidden = true;
-  } else {
-    attempts++;
+    return;
+  }
 
-    feedback.textContent =
-      wrongRoasts[Math.floor(Math.random() * wrongRoasts.length)];
+  attempts++;
+  button.disabled = true;
+  button.classList.add("wrong");
+  feedback.textContent = option.roast;
+    feedback.classList.remove("roast");
+  void feedback.offsetWidth; // restarts the animation on every wrong click
+  feedback.classList.add("roast");
 
-    if (attempts >= 3) {
-      feedback.textContent +=
-        " Three attempts and still struggling? Try again, legend. 💀";
+  if (attempts >= 3) {
+    feedback.textContent +=
+      " Only one option left. A coin flip would've won by now. 💀";
+  }
+}
+
+searchForm.addEventListener("submit", function (event) {
+  event.preventDefault();
+
+  const enteredText = searchInput.value.trim();
+  if (!enteredText) return;
+
+  // Secret bypass keyword: brain.exe
+  if (enteredText.toLowerCase().startsWith("brain.exe")) {
+    currentQuery = enteredText.slice("brain.exe".length).trim();
+
+    if (!currentQuery) {
+      feedback.textContent =
+        "Secret mode needs a search query too, genius. 💀";
+      challenge.hidden = false;
+      questionText.textContent =
+        "What do you want to search without paying your Neuron Tax?";
+      optionsBox.hidden = true;
+      return;
     }
-  }
-});
 
-answerInput.addEventListener("keydown", function (event) {
-  if (event.key === "Enter") {
-    checkButton.click();
+    window.open(
+      "https://www.google.com/search?q=" +
+      encodeURIComponent(currentQuery),
+      "_blank",
+      "noopener,noreferrer"
+    );
+    return;
   }
+
+  currentQuery = enteredText;
+  showRandomQuestion();
 });
 
 /* NEURON TAX — Interactive Neural Circuit Background */
@@ -428,3 +493,58 @@ answerInput.addEventListener("keydown", function (event) {
   resize();
   animationId = requestAnimationFrame(animate);
 })();
+/* THE WASTE-YOUR-TIME MAZE */
+const mazePages = [
+  { text: "You think you're done? 😏 Not yet. Go to the next page. You might find something interesting.", btn: "Next page →" },
+  { text: "Nothing here yet. But the next page looks promising. 👀", btn: "Next page →" },
+  { text: "Almost there. Maybe. Probably not. Keep clicking.", btn: "Surely this one →" },
+  { text: "You might find something you want on the next page. Trust me. 🤝", btn: "I trust you →" },
+  { text: "Still nothing. But your click count is looking great! 📈", btn: "Keep clicking →" },
+  { text: "Halfway there! (This is a lie. You're past halfway. It's worse.)", btn: "Ugh, fine →" },
+  { text: "Fun fact: you could have just googled this in 2 seconds. 💀", btn: "Next page →" },
+  { text: "The next page has what you're looking for. Definitely. 100%.", btn: "Last time, I swear →" },
+  { text: "Your brain is working so hard. Or is it just your finger? 🖱️", btn: "Almost… →" }
+];
+
+function startMaze(finalLink) {
+  const maze = document.createElement("div");
+  maze.className = "maze";
+  results.appendChild(maze);
+  finalLink.hidden = true;
+
+  let page = 0;
+
+  function render() {
+    maze.replaceChildren();
+
+    const counter = document.createElement("p");
+    counter.className = "maze-counter";
+    counter.textContent = `Page ${page + 1} / 10`;
+    maze.appendChild(counter);
+
+    const text = document.createElement("p");
+    text.className = "maze-text";
+    maze.appendChild(text);
+
+    if (page < mazePages.length) {
+      text.textContent = mazePages[page].text;
+
+      const next = document.createElement("button");
+      next.type = "button";
+      next.textContent = mazePages[page].btn;
+      next.style.transform =
+        `translateX(${Math.floor(Math.random() * 160) - 80}px)`;
+      next.addEventListener("click", () => {
+        page++;
+        render();
+      });
+      maze.appendChild(next);
+    } else {
+      text.textContent =
+        "🎉 You have managed to waste your time completely. Final access granted.";
+      finalLink.hidden = false;
+    }
+  }
+
+  render();
+}
