@@ -1,0 +1,39 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Neuron Tax 🧠</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>  
+<canvas id="neural-background" aria-hidden="true"></canvas>
+  <main class="container">
+    <h1>🧠 Neuron Tax</h1>
+    <p>I can't let that brain be drowsy.</p>
+
+    <form id="search-form">
+      <input
+        id="search-input"
+        type="text"
+        placeholder="What do you want to search?"
+        required
+      >
+      <button type="submit">Search</button>
+    </form>
+
+    <section id="challenge" hidden>
+      <h2>Pay your Neuron Tax 💀</h2>
+      <p id="question"></p>
+      <input id="answer-input" type="text" placeholder="Your answer">
+      <button id="check-answer">Submit Answer</button>
+      <p id="feedback" aria-live="polite"></p>
+    </section>
+
+    <section id="results"></section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>

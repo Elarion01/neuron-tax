@@ -1,0 +1,242 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --blue: #16bfff;
+  --gold: #ffc66d;
+  --bg: #030b18;
+  --panel: rgba(7, 21, 40, 0.88);
+  --text: #edf7ff;
+  --muted: #91a9c3;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  padding: 30px 18px;
+  display: grid;
+  place-items: center;
+  font-family: 'Inter', sans-serif;
+  color: var(--text);
+  background:
+    radial-gradient(ellipse at 15% 15%, #0877b533, transparent 40%),
+    radial-gradient(ellipse at 85% 80%, #d9913320, transparent 35%),
+    var(--bg);
+}
+
+.container {
+  width: 100%;
+  max-width: 760px;
+  padding: clamp(24px, 5vw, 52px);
+  text-align: center;
+  background: var(--panel);
+  border: 1px solid #1b9bdf66;
+  border-radius: 26px;
+  box-shadow:
+    0 0 35px #008cff16,
+    0 25px 90px #0009,
+    inset 0 1px #ffffff0d;
+  backdrop-filter: blur(16px);
+  animation: appear 0.7s ease-out;
+}
+
+h1 {
+  margin: 0;
+  font-size: clamp(38px, 7vw, 64px);
+  font-weight: 800;
+  letter-spacing: -2.5px;
+  background: linear-gradient(100deg, #f6fbff 15%, var(--blue) 55%, var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 0 16px #16bfff44);
+}
+
+.container > p {
+  margin: 14px 0 32px;
+  color: var(--muted);
+  letter-spacing: 1.5px;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+form {
+  display: flex;
+  gap: 12px;
+  padding: 8px;
+  background: #020914;
+  border: 1px solid #168edb77;
+  border-radius: 17px;
+  box-shadow: 0 0 24px #008cff12;
+}
+
+input {
+  width: 100%;
+  min-width: 0;
+  padding: 16px;
+  color: var(--text);
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: 11px;
+  outline: none;
+  font: inherit;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+input::placeholder {
+  color: #6e849e;
+}
+
+input:focus {
+  border-color: #16bfff66;
+  box-shadow: 0 0 18px #16bfff18;
+}
+
+button {
+  padding: 15px 24px;
+  color: #03101c;
+  background: linear-gradient(120deg, var(--blue), #83e5ff);
+  border: 0;
+  border-radius: 12px;
+  font: inherit;
+  font-weight: 800;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 0 20px #16bfff35;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 28px #16bfff70;
+}
+
+button:active {
+  transform: scale(0.97);
+}
+
+#challenge {
+  margin-top: 26px;
+  padding: 26px;
+  text-align: left;
+  background: #030c19;
+  border: 1px solid #ffc66d66;
+  border-radius: 18px;
+  box-shadow: 0 0 24px #ffc66d0b;
+  animation: appear 0.35s ease-out;
+}
+
+#challenge h2 {
+  margin-top: 0;
+  color: var(--gold);
+}
+
+#question {
+  color: #d7e8f8;
+  font-size: 16px;
+  line-height: 1.8;
+}
+
+#challenge input {
+  margin: 12px 0;
+  background: #071526;
+  border-color: #23415e;
+}
+
+#check-answer {
+  color: #211305;
+  background: linear-gradient(120deg, var(--gold), #ffe7a8);
+  box-shadow: 0 0 18px #ffc66d22;
+}
+
+#feedback {
+  color: var(--gold);
+  font-weight: 600;
+  line-height: 1.7;
+}
+
+#results {
+  margin-top: 24px;
+  overflow-wrap: anywhere;
+  line-height: 1.7;
+}
+
+#results a {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 14px 22px;
+  color: var(--blue);
+  border: 1px solid #16bfff88;
+  border-radius: 12px;
+  text-decoration: none;
+  font-weight: 700;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+#results a:hover {
+  background: #16bfff12;
+  box-shadow: 0 0 22px #16bfff22;
+}
+
+[hidden] {
+  display: none !important;
+}
+
+@keyframes appear {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 14px;
+  }
+
+  .container {
+    padding: 26px 18px;
+    border-radius: 20px;
+  }
+
+  form {
+    flex-direction: column;
+  }
+
+  form button {
+    width: 100%;
+  }
+
+  #challenge {
+    padding: 18px;
+  }
+}
+
+/* Interactive neural-circuit background */
+#neural-background {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+
+.container {
+  position: relative;
+  z-index: 1;
+  transform-style: preserve-3d;
+  transition: border-color 0.3s ease;
+}
+
+body {
+  overflow-x: hidden;
+}
